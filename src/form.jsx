@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./XModal.css";
 
 const XModal = ({ setIsOpenModal, setModalOpenBackground }) => {
@@ -9,12 +9,35 @@ const XModal = ({ setIsOpenModal, setModalOpenBackground }) => {
     dob: "",
   });
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (event.target.classList.contains("modalBackground")) {
+        setIsOpenModal(false);
+        setModalOpenBackground(false);
+        setFormData({
+          username: "",
+          email: "",
+          phone: "",
+          dob: "",
+        });
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setIsOpenModal, setModalOpenBackground]);
+
   const handleFormDataChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [id]: value }));
   };
 
-  const validationChecks = () => {
+  const validationChecks = (e) => {
+    e.preventDefault(); // Prevent form submission
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       window.alert("Invalid email. Please check your email address.");
       return;
@@ -35,32 +58,13 @@ const XModal = ({ setIsOpenModal, setModalOpenBackground }) => {
       );
       return;
     }
+
+    // If all validations pass, you can submit the form here
   };
 
   return (
-    <div
-      className="modalBackground"
-      onClick={() => {
-        //close modal on clicking modal background
-        setIsOpenModal(false);
-        setModalOpenBackground(false);
-        setFormData((prevData) => ({
-          ...prevData,
-          username: "",
-          email: "",
-          phone: "",
-          dob: "",
-        }));
-      }}
-    >
-      <div
-        className="modal"
-        onClick={(e) => {
-          //do not close modal when clicked inside modal container,
-          // which is part of modal background.
-          e.stopPropagation();
-        }}
-      >
+    <div className="modalBackground">
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modalHeader">
           <h1>Fill Details</h1>
         </div>
