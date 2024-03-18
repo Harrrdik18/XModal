@@ -1,3 +1,4 @@
+// XModal.jsx
 import React, { useState } from "react";
 import "./XModal.css";
 
@@ -14,7 +15,8 @@ const XModal = ({ setIsOpenModal, setModalOpenBackground }) => {
     setFormData((prevData) => ({ ...prevData, [id]: value }));
   };
 
-  const validationChecks = () => {
+  const validationChecks = (e) => {
+    e.preventDefault();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       window.alert("Invalid email. Please check your email address.");
       return;
@@ -38,29 +40,8 @@ const XModal = ({ setIsOpenModal, setModalOpenBackground }) => {
   };
 
   return (
-    <div
-      className="modalBackground"
-      onClick={() => {
-        //close modal on clicking modal background
-        setIsOpenModal(false);
-        setModalOpenBackground(false);
-        setFormData((prevData) => ({
-          ...prevData,
-          username: "",
-          email: "",
-          phone: "",
-          dob: "",
-        }));
-      }}
-    >
-      <div
-        className="modal"
-        onClick={(e) => {
-          //do not close modal when clicked inside modal container,
-          // which is part of modal background.
-          e.stopPropagation();
-        }}
-      >
+    <div className="modalBackground">
+      <div className="modal">
         <div className="modalHeader">
           <h1>Fill Details</h1>
         </div>
